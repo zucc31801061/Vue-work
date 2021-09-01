@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>4.2</title>
+		<style type="text/css">
+			.static{
+				width: 500px;
+				height: 590px;
+				border: 1px #cccccc solid;
+				margin: 20px auto;
+				padding: 40px;
+				text-align: center;
+			}
+			.btn-large{
+				border:3px green solid;
+			}
+			.btn-disabled{
+				background-color:#5F9EA0 ;
+			}
+			#app img{
+				width: 400px;
+				height: 550px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="static":class="classes">
+				<img v-bind:src="imgUrl">
+			</div>
+		</div>
+		
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			var app=new Vue({
+				el:'#app',
+				data:{
+					imgUrl:'1.jpg',
+					size:'large',
+					disabled:true
+				},
+				computed:{
+					classes:function(){
+						return [
+							'btn',
+							{
+							['btn-'+this.size]:this.size!=='',
+							['btn-disabled']:this.disabled
+							}
+						]
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

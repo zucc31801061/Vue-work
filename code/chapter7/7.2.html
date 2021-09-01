@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>7.2</title>
+	</head>
+	<body>
+		<div id="app" v-cloak>
+			<my-component></my-component>
+		</div>
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			var Child = {
+				template:'<div>局部注册组件的内容</div>'
+			}
+			
+			var app = new Vue({
+				el: '#app',
+				components:{
+					'my-component':Child,
+				}
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>2.5</title>
+		<style type="text/css">
+			#app {
+				margin: 100px auto;
+				padding: 20px 10px;
+				border: black 2px solid;
+				width: 600px;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			{{date|formatDate}}
+		</div>
+
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			var padDate = function(value) {
+				return value < 10 ? '0' + value : value;
+			};
+
+			var app = new Vue({
+				el: '#app',
+				data: {
+					date: new Date()
+				},
+				filters: {
+					formatDate: function(value) {
+						var date = new Date(value);
+						var year = date.getFullYear();
+						var month = padDate(date.getMonth() + 1);
+						var day = padDate(date.getDate());
+						var weeks = ['日', '一', '二', '三', '四', '五', '六'];
+						var week = '星期' + weeks[date.getDay()];
+						var hours = padDate(date.getHours());
+						var minutes = padDate(date.getMinutes());
+						var seconds = padDate(date.getSeconds());
+						var time;
+						if (hours < 12)
+							noon = '，小王早上好!';
+						else if (hours == 12)
+							noon = '，小王中午好!';
+						else if (hours > 12 && hours < 18)
+							noon = '，小王下午好!';
+						else
+							noon = '，小王晚上好!';
+						return '现在是 ' + year + '年' + month + '月' + day + '日   ' + week + '   ' + hours + ':' +
+							minutes + ':' +
+							seconds + noon;
+					}
+				},
+				// methods: {
+				// 	padDate: function(value) {
+				// 		this.value = value < 10 ? '0' + value : value;
+				// 	}
+				// },
+				mounted: function() {
+					var _this = this;
+					this.timer = setInterval(function() {
+						_this.date = new Date();
+					}, 1000);
+				},
+				beforeDestroy: function() {
+					if (this.timer) {
+						clearInterval(this.timer);
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

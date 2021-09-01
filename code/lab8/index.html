@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>实验八</title>
+		<link rel="stylesheet" href="../node_modules/element-ui/lib/theme-chalk/index.css">
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+				border: 0;
+			}
+
+			.el-header {
+				color: #333;
+				line-height: 80px;
+				width: 100%;
+				background-color: #20a0ff;
+			}
+
+			.el-main {
+				background-color: #F2F6FC;
+			}
+
+			.el-aside {
+				color: #333;
+				height: 100%;
+			}
+
+			.bottom {
+				display: flex;
+				flex-flow: column;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.text {
+				color: #567180;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<el-container>
+				<el-header>
+					<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
+						background-color="#20a0ff" text-color="#fff">
+						<el-menu-item>
+							<img src="img/logo.svg" />
+						</el-menu-item>
+						<el-menu-item index="1"></el-menu-item>
+						</el-menu-item>
+				</el-header>
+				<el-container>
+					<el-aside width="200px">
+						<el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen"
+							@close="handleClose" background-color="#EBEEF5" text-color="#000"
+							active-text-color="#20a0ff" style="height:800px;">
+							<el-menu-item index="1" @click="change(1)">
+								<i class="el-icon-s-marketing"></i>
+								<span>index</span>
+							</el-menu-item>
+							<el-menu-item index="2" @click="change(2)">
+								<i class="el-icon-menu"></i>
+								<span slot="title">table</span>
+							</el-menu-item>
+							<el-menu-item index="3" @click="change(3)">
+								<i class="el-icon-document"></i>
+								<span slot="title">form</span>
+							</el-menu-item>
+							<el-menu-item index="4" @click="change(4)">
+								<i class="el-icon-s-tools"></i>
+								<span slot="title">editor</span>
+							</el-menu-item>
+						</el-menu>
+					</el-aside>
+					<el-container>
+						<el-main>
+							<div v-show="flag === 1">
+
+							</div>
+							<div v-show="flag === 2">
+								<div style="display: flex;align-items: center;">
+									姓名：<el-input v-model="input" placeholder="请输入内容" style="width: 200px;"></el-input>
+									&nbsp;日期：<el-date-picker type="date" placeholder="选择日期" v-model="value1">
+									</el-date-picker>
+									&nbsp;地址：<el-select v-model="value2" placeholder="请选择">
+										<el-option v-for="item in options" :key="item.value" :label="item.label"
+											:value="item.value">
+										</el-option>
+									</el-select>
+									&nbsp;籍贯：<el-select v-model="value3" placeholder="请选择">
+										<el-option v-for="item in options2" :key="item.value" :label="item.label"
+											:value="item.value">
+										</el-option>
+									</el-select>
+									&nbsp;
+									<el-button type="primary">查询</el-button>
+									<el-button type="primary">导出数据</el-button>
+								</div>
+								<template>
+									<el-table style="margin-top: 40px;" border ref="multipleTable" :data="tableData"
+										tooltip-effect="dark" style="width: 100%"
+										@selection-change="handleSelectionChange">
+										<el-table-column type="selection" width="55">
+										</el-table-column>
+										<el-table-column label="日期" width="120">
+											<template slot-scope="scope">{{ scope.row.date }}</template>
+										</el-table-column>
+										<el-table-column prop="name" label="姓名" width="120">
+										</el-table-column>
+										<el-table-column prop="address" label="地址" show-overflow-tooltip>
+										</el-table-column>
+										<el-table-column prop="place" label="籍贯" show-overflow-tooltip>
+										</el-table-column>
+										<el-table-column prop="phone" label="手机号" show-overflow-tooltip>
+										</el-table-column>
+										<el-table-column prop="action" label="操作" show-overflow-tooltip>
+											<template slot-scope="scope">
+												<el-button @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+												<el-button type="danger" @click="handleDelete(scope.$index, scope.row)">
+													删除</el-button>
+											</template>
+										</el-table-column>
+									</el-table>
+								</template>
+								<div
+									style="display: flex;flex-flow: column;align-items: center;justify-content: center;margin-top: 40px;">
+									<el-pagination background layout="prev, pager, next,jumper" :total="1000">
+									</el-pagination>
+								</div>
+							</div>
+							<div v-show="flag === 3">
+
+							</div>
+							<div v-show="flag === 4">
+
+							</div>
+						</el-main>
+					</el-container>
+				</el-container>
+			</el-container>
+
+			<div class="el-dialog__wrapper" size="tiny" v-if="editFormVisible" :close-on-click-modal="false">
+				<div class="el-dialog" style="margin-top: 15vh;">
+					<div class="el-dialog__header">
+						<span class="el-dialog__title">修改个人信息</span>
+						<button type="button" aria-label="Close" class="el-dialog__headerbtn"
+							@click="editFormVisible=false">
+							<i class="el-dialog__close el-icon el-icon-close"></i>
+						</button>
+					</div>
+					<div class="el-dialog__body">
+						<form class="el-form">
+							<div class="el-form-item">
+								<label class="el-form-item__label" style="width: 80px;">姓名</label>
+								<div class="el-form-item__content" style="margin-left: 80px;">
+									<div class="el-input">
+										<input autocomplete="off" type="text" rows="2" validateevent="true"
+											class="el-input__inner" v-model="editForm.name">
+									</div>
+								</div>
+							</div>
+							<div class="el-form-item">
+								<label class="el-form-item__label" style="width: 80px;">地址</label>
+								<div class="el-form-item__content" style="margin-left: 80px;">
+									<div class="el-input">
+										<input autocomplete="off" type="text" rows="2" validateevent="true"
+											class="el-input__inner" v-model="editForm.address">
+									</div>
+								</div>
+							</div>
+							<div class="el-form-item">
+								<label class="el-form-item__label" style="width: 80px;">出生日期</label>
+								<div class="el-form-item__content" style="margin-left: 80px;">
+									<div class="el-date-editor el-input el-input--prefix el-input--suffix el-date-editor--date"
+										style="width: 100%;">
+										<input autocomplete="off" placeholder="选择日期" type="text" rows="2"
+											prefixicon="el-icon-date" class="el-input__inner" v-model="editForm.date">
+										<span class="el-input__prefix">
+											<i class="el-input__icon el-icon-date"></i>
+										</span>
+										<span class="el-input__suffix">
+											<span class="el-input__suffix-inner">
+												<i class="el-input__icon"></i>
+											</span>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="el-form-item">
+								<div class="el-form-item__content" style="margin-left: 80px;">
+									<button type="button" class="el-button el-button--primary">
+										<span>修改</span>
+									</button>
+									<button type="button" class="el-button el-button--default"
+										@click="editFormVisible=false">
+										<span>取消</span>
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="../dist/vue.min.js"></script>
+		<script src="../node_modules/element-ui/lib/index.js"></script>
+		<script src="../dist/echarts.min.js"></script>
+		<script src="data.js"></script>
+	</body>
+</html>

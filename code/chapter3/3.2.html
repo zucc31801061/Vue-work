@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>3.2</title>
+	</head>
+	<body>
+		<h1>我的购物车</h1>
+		<div id="app1">
+			<h3>数码店</h3>
+			<ul>
+				<li v-for="goods in package1">
+					商品名：{{goods.name}}<br>
+					单价：¥{{goods.price}}<br>
+					数量：{{goods.count}}<br>
+					共计：¥{{prices}}<br>
+				</li>
+			</ul>
+		</div>
+		<div id="app2">
+			<h3>水果店</h3>
+			<ul>
+				<li v-for="goods in package2">
+					商品名：{{goods.name}}<br>
+					单价：¥{{goods.price}}<br>
+					数量：{{goods.count}}<br>
+					共计：¥{{prices}}<br>
+				</li>
+			</ul>
+		</div>
+		<div id="app3">
+			<h3>总价：¥{{prices}}</h3>
+		</div>
+
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			var app1 = new Vue({
+				el: '#app1',
+				data: {
+					package1: [{
+							name: 'iPhone 7',
+							price: 7199,
+							count: 2
+						},
+						{
+							name: 'iPad',
+							price: 2888,
+							count: 1
+						}
+					]
+				},
+				computed: {
+					prices: function() {
+						var prices = 0;
+						for (var i = 0; i < this.package1.length; i++) {
+							prices += this.package1[i].price * this.package1[i].count;
+						}
+						return prices;
+					}
+				}
+			});
+			var app2 = new Vue({
+				el: '#app2',
+				data: {
+					package2: [{
+							name: 'apple',
+							price: 3,
+							count: 5
+						},
+						{
+							name: 'banana',
+							price: 2,
+							count: 10
+						}
+					]
+				},
+				computed: {
+					prices: function() {
+						var prices = 0;
+						for (var i = 0; i < this.package2.length; i++) {
+							prices += this.package2[i].price * this.package2[i].count;
+						}
+						return prices;
+					}
+				}
+			});
+			var app3 = new Vue({
+				el: '#app3',
+				computed: {
+					prices: function() {
+						var prices = 0;
+						for (var i = 0; i < app1.package1.length; i++) {
+							prices += app1.package1[i].price * app1.package1[i].count;
+						}
+						for (var i = 0; i < app2.package2.length; i++) {
+							prices += app2.package2[i].price * app2.package2[i].count;
+						}
+						return prices;
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

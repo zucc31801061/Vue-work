@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>7.12</title>
+	</head>
+	<body>
+		<div id="app">
+			<my-component :width="100"></my-component>
+		</div>
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			Vue.component('my-component',{
+				props:{
+					propA:Number,
+					propB:[String,Number],
+					propC:{
+						type:Boolean,
+						default:true
+					},
+					propD:{
+						type:Number,
+						required:true
+					},
+					propE:{
+						type:Array,
+						default:function(){
+							return [];
+						}
+					},
+					propF:{
+						validator:function(value){
+							return value>10;
+						}
+					}
+				}
+			});
+			
+			var app = new Vue({
+				el: '#app'
+			})
+		</script>
+	</body>
+</html>

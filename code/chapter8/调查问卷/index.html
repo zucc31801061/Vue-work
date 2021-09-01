@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>调查问卷WebApp</title>
+		<link rel="stylesheet" href="style.css" type="text/css">
+	</head>
+	<body>
+		<div id="app" class="page" v-cloak>
+			<questionnaire :questions="questions" @submit="handleSubmit"></questionnaire>
+		</div>
+		<script src="../../dist/vue.min.js"></script>
+		<script src="questionnaire.js"></script>
+		<script src="questions.js"></script>
+		<script src="mybutton.js"></script>
+		<script src="index.js"></script>
+	</body>
+</html>

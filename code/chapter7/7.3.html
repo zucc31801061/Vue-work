@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>7.3</title>
+	</head>
+	<body>
+		<div id="app" v-cloak>
+			<table>
+				<tbody is="my-component"></tbody>
+			</table>
+		</div>
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			Vue.component('my-component',{
+				template:'<div>这里是组件的内容</div>'
+			});
+			var app = new Vue({
+				el: '#app'
+			})
+		</script>
+	</body>
+</html>

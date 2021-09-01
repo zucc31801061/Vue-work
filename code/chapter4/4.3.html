@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>4.3</title>
+	</head>
+	<body>
+		<div id="app">
+			<temp></temp>
+		</div>
+		
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			Vue.component('temp',{
+				template:'<p>here is the temp</p>'
+			})
+			
+			var app = new Vue({
+				el:'#app'
+			})
+		</script>
+	</body>
+</html>

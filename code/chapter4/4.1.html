@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>4.1</title>
+		<style type="text/css">
+			.static{
+				width: 400px;
+				height: 400px;
+				border: 1px #cccccc solid;
+				margin: 20px auto;
+				padding: 50px;
+				text-align: center;
+			}
+			
+			.active{
+				border: 1px red solid;
+			}
+			
+			#app img{
+				width: 400px;
+				height: 400px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="static" :class="{'active':isActive}" @click="handleChange">
+				<img v-bind:src="imgUrl">
+			</div>
+		</div>
+		
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			var app = new Vue({
+				el:'#app',
+				data:{
+					imgUrl:'1.jpg',
+					isActive:false
+				},
+				methods:{
+					handleChange:function(){
+						this.isActive = !this.isActive;
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

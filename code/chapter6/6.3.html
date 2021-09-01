@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>6.3</title>
+		<style type="text/css">
+			#app{
+				display: flex;
+				flex-direction: column;
+				margin-left: 10%;
+				width: 80%;
+			}
+			
+			table {
+				border-collapse: collapse;
+				width: 100%;
+			}
+		
+			th,td {
+				border: 1px solid #C0C0C0;
+				text-align: center;
+				padding: 5px;
+			}
+		
+			th {
+				background-color: #DCDCDC;
+			}
+		
+			h3 {
+				margin-top: 15px;
+				margin-bottom: 15px;
+			}
+			
+			h2 {
+				margin-top: 0px;
+				margin-bottom: 0px;
+			}
+			
+			h4{
+				margin-top: 0px;
+				margin-bottom: 10px;
+			}
+			
+			hr {
+				width: 100%;
+				margin-top: 20px;
+				margin-bottom: 20px;
+			}
+		
+			button {
+				margin: 0px 7px 0px 7px;
+			}
+			
+			.choose{
+				margin-top: 20px;
+			}
+			
+			.shopitem{
+				width: 200px;
+				height: 300px;
+				flex-direction: column;
+				text-align: center;
+				margin: 20px;
+				border: #909090 1px solid;
+				border-radius: 10px;
+				box-shadow: 2px 2px 5px #909090;
+				float: left;
+			}
+			
+			.shopitem:hover{
+				background-color: #eeeeee;
+			}
+			
+			.shopitem img{
+				width: 80%;
+				height: 55%;
+				padding: 15px;
+			}
+			
+			.shopitem button{
+				margin-top: 10px;
+			}
+			
+			.shop{
+				display: flex;
+				flex-direction: column;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app" v-cloak>
+			<div class="choose">
+				<button type="button" @click="changeType1">购物车</button>
+				<button type="button" @click="changeType2">商城</button>
+			</div>
+			<div v-show="isShop === 1">
+				<h2 style="text-align: center;">购物车</h2>
+				<template v-for="(typeitem,typeindex) in list" v-if="typeitem.package.length>=1">
+					<table>
+						<h3>{{typeitem.shopType}}</h3>
+						<thead>
+							<tr>
+								<th><button @click="handleselect(typeindex)">全选</button></th>
+								<th>商品名称</th>
+								<th>商品单价</th>
+								<th>购买数量</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(packageItem,index2) in typeitem.package">
+								<td><input v-model="packageItem.choose" type="checkbox"></td>
+								<td>{{packageItem.name}}</td>
+								<td>{{packageItem.price}}</td>
+								<td>
+									<button @click="handleReduce(typeindex,index2)"
+										:disabled="packageItem.count===1">-</button>
+									{{packageItem.count}}
+									<button @click="handleAdd(typeindex,index2)">+</button>
+								</td>
+								<td><button @click="handleremove(typeindex,index2)">移除</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</template>
+				<hr />
+				<button @click="handleAll">{{str}}</button>
+				<button @click="handleRemoveAll">全部移除</button>
+				<h3>总价：{{prices}}</h3>
+			</div>
+			<div v-show="isShop === 2">
+				<h2 style="text-align: center;">商城</h2>
+				<div class="shop">
+					<div class="shopline" v-for="(shopitem,shopindex) in shoplist">
+						<h3>{{shopitem.shopType}}店</h3>
+						<div class="shopitem" v-for="(item,index) in shopitem.package">
+							<img :src="item.src">
+							<h4>{{item.name}}</h4>
+							<span>商品价格：¥{{item.price}}</span>
+							<button type="button" class="shopbtn" @click="inputItem(shopindex,index)">加入购物车</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					list: [{
+							shopType: '电子产品',
+							isChoose: false,
+							package: [{
+									id: 1,
+									name: 'ipad',
+									price: 6000,
+									count: 1,
+									choose: false
+								},
+								{
+									id: 2,
+									name: 'iphone',
+									price: 8000,
+									count: 1,
+									choose: false
+								}
+							]
+						},
+						{
+							shopType: '生活用品',
+							isChoose: false,
+							package: [{
+									id: 1,
+									name: '毛巾',
+									price: 20,
+									count: 1,
+									choose: false
+								},
+								{
+									id: 2,
+									name: '杯子',
+									price: 50,
+									count: 1,
+									choose: false
+								}
+							]
+						},
+						{
+							shopType: '水果蔬菜',
+							isChoose: false,
+							package: [{
+									id: 1,
+									name: '香蕉',
+									price: 8,
+									count: 1,
+									choose: false
+								},
+								{
+									id: 2,
+									name: '苹果',
+									price: 3,
+									count: 1,
+									choose: false
+								},
+								{
+									id: 3,
+									name: '菠萝',
+									price: 20,
+									count: 1,
+									choose: false
+								}
+							]
+						},
+					],
+					checked: false,
+					str: '全选',
+					isShop: 1,
+					shoplist: [{
+							shopType: '电子产品',
+							package: [{
+									src: 'img/1.jpg',
+									name: 'ipad',
+									price: 6000,
+									count: 1
+								},
+								{
+									src: 'img/2.jpg',
+									name: 'iphone',
+									price: 8000,
+									count: 1
+								}
+							]
+						},
+						{
+							shopType: '生活用品',
+							isChoose: false,
+							package: [{
+									src: 'img/3.jpg',
+									name: '毛巾',
+									price: 20,
+									count: 1
+								},
+								{
+									src: 'img/4.jpg',
+									name: '杯子',
+									price: 50,
+									count: 1
+								}
+							]
+						},
+						{
+							shopType: '水果蔬菜',
+							isChoose: false,
+							package: [{
+									src: 'img/5.jpg',
+									name: '香蕉',
+									price: 8,
+									count: 1
+								},
+								{
+									src: 'img/6.jpg',
+									name: '苹果',
+									price: 3,
+									count: 1
+								},
+								{
+									src: 'img/7.jpg',
+									name: '菠萝',
+									price: 20,
+									count: 1
+								}
+							]
+						},
+					]
+				},
+				computed: {
+					prices: function() {
+						var prices = 0;
+						for (var i = 0; i < this.list.length; i++) {
+							for (var j = 0; j < this.list[i].package.length; j++) {
+								if (this.list[i].package[j].choose) {
+									prices += this.list[i].package[j].price * this.list[i].package[j].count;
+								}
+							}
+						}
+						console.log(prices);
+						return prices.toString().replace(/\B(?=(\d{3})+$)/g, ',');
+					}
+				},
+				methods: {
+					handleReduce: function(typeindex, index2) {
+						if (this.list[typeindex].package[index2].count === 1) return;
+						this.list[typeindex].package[index2].count--;
+					},
+					handleremove: function(typeindex, index2) {
+						this.list[typeindex].package.splice(index2, 1)
+
+					},
+					handleRemoveAll: function() {
+						for (var i = 0; i < this.list.length; i++) {
+							this.list[typeindex].package.splice(this.list[i].package.length, 1);
+						}
+					},
+					handleAll: function() {
+						if (this.checked == false) {
+							this.checked = true;
+							this.str = "取消全选";
+							for (var i = 0; i < this.list.length; i++) {
+								for (var j = 0; j < this.list[i].package.length; j++) {
+									var item = this.list[i].package[j];
+									item.choose = true;
+								}
+							}
+						} else {
+							this.checked = false;
+							this.str = "全选";
+							for (var i = 0; i < this.list.length; i++) {
+								for (var j = 0; j < this.list[i].package.length; j++) {
+									var item = this.list[i].package[j];
+									item.choose = false;
+								}
+							}
+						}
+					},
+					handleAdd: function(typeindex, index2) {
+						this.list[typeindex].package[index2].count++;
+					},
+					handleselect: function(typeindex) {
+						if (this.list[typeindex].isChoose == false) {
+							for (var i = 0; i < this.list[typeindex].package.length; i++) {
+								this.list[typeindex].package[i].choose = true;
+							}
+							this.list[typeindex].isChoose = true;
+						} else {
+							for (var i = 0; i < this.list[typeindex].package.length; i++) {
+								this.list[typeindex].package[i].choose = false;
+							}
+							this.list[typeindex].isChoose = false;
+						}
+					},
+					changeType1: function() {
+						this.isShop = 1;
+					},
+					changeType2: function() {
+						this.isShop = 2;
+					},
+					inputItem:function(shopindex, index){
+						var flag = 0;
+						for(var i = 0; i < this.list.length; i++){
+							if(this.list[i].shopType === this.shoplist[shopindex].shopType){
+								for(var j = 0; j < this.list[i].package.length; j++){
+									if(this.list[i].package[j].name === this.shoplist[shopindex].package[index].name){
+										flag = 1;
+										window.alert("购物车已包含该商品");
+									}
+								}
+							}
+							if(flag == 0){
+								this.list[i].package.push(this.shoplist[shopindex].package[index]);
+								window.alert("添加成功");
+								break;
+							}
+						}
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

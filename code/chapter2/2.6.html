@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>2.6</title>
+	</head>
+	<body>
+		<div id="app">
+			<p v-if="show">这段文本将反复显示</p>
+			<button v-on:click="handle">点击按钮</button>
+		</div>
+		
+		<script src="../dist/vue.min.js"></script>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					show: true
+				},
+				methods:{
+					handle: function(){
+						this.show = !this.show;
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

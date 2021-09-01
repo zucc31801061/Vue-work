@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>5.1</title>
+		<style type="text/css">
+			table {
+				border-collapse: collapse;
+				margin-left: 5%;
+				width: 100%;
+			}
+		
+			th,td {
+				border: 1px solid #C0C0C0;
+				text-align: center;
+				padding: 5px;
+			}
+		
+			th {
+				background-color: #DCDCDC;
+			}
+		
+			.container {
+				width: 500px;
+				height: 500px;
+			}
+		
+			h3 {
+				margin-left: 5%;
+			}
+			
+			hr {
+				width: 550px;
+			}
+		
+			button {
+				margin-left: 5%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app" class="container">
+			<template v-for="(listItem,index1) in list" v-if="listItem.package.length>=1">
+				<table>
+					<h3>{{listItem.packagetype}}</h3>
+					<thead>
+						<tr>
+							<th><button @click="handleselect(index1)">全选</button></th>
+							<th>商品名称</th>
+							<th>商品单价</th>
+							<th>购买数量</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(packageItem,index2) in listItem.package">
+							<td><input v-model="packageItem.choose" type="checkbox"></td>
+							<td>名称:{{packageItem.name}}</td>
+							<td>价格:{{packageItem.price}}</td>
+							<td>数量:
+								<button @click="handleReduce(index1,index2)"
+									:disabled="packageItem.count===1">-</button>
+								{{packageItem.count}}
+								<button @click="handleAdd(index1,index2)">+</button>
+							</td>
+							<!-- <td><button @click="handleremove(index1,index2)">移除</button></td> -->
+							<td><button @click="handleremove(index1,index2)">移除</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</template>
+			<hr />
+			<button @click="handleAll">全选</button>
+			<h3>总价：{{prices}}</h3>
+		</div>
+	</body>
+
+	<script src="../dist/vue.min.js"></script>
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				list: [{
+						packagetype: '电子产品',
+						package: [{
+								name: 'ipad',
+								price: 6000,
+								count: 1,
+								choose: false
+							},
+							{
+								name: 'iphone',
+								price: 8000,
+								count: 1,
+								choose: false
+							}
+						]
+					},
+					{
+						packagetype: '生活用品',
+						package: [{
+								name: '毛巾',
+								price: 20,
+								count: 1,
+								choose: false
+							},
+							{
+								name: '杯子',
+								price: 50,
+								count: 1,
+								choose: false
+							}
+						]
+					},
+					{
+						packagetype: '水果蔬菜',
+						package: [{
+								name: '香蕉',
+								price: 8,
+								count: 1,
+								choose: false
+							},
+							{
+								name: '苹果',
+								price: 3,
+								count: 1,
+								choose: false
+							},
+							{
+								name: '菠萝',
+								price: 20,
+								count: 1,
+								choose: false
+							}
+						]
+					}
+				]
+			},
+			computed: {
+				prices: function() {
+					var prices = 0;
+					for (var i = 0; i < this.list.length; i++) {
+						for (var j = 0; j < this.list[i].package.length; j++) {
+							if (this.list[i].package[j].choose) {
+								prices += this.list[i].package[j].price * this.list[i].package[j].count;
+							}
+						}
+					}
+					console.log(prices);
+					return prices.toString().replace(/\B(?=(\d{3})+$)/g, ',');
+				}
+			},
+			methods: {
+				handleReduce: function(index1, index2) {
+					if (this.list[index1].package[index2].count === 1) return;
+					this.list[index1].package[index2].count--;
+				},
+				handleremove: function(index1, index2) {
+					this.list[index1].package.splice(index2, 1)
+
+				},
+				handleAll: function() {
+					let flag = true;
+					for (var i = 0; i < this.list.length; i++) {
+						for (var j = 0; j < this.list[i].package.length; j++) {
+							if(this.list[i].package[j].choose == false){
+								flag = false;
+							}
+							this.list[i].package[j].choose = true;
+						}
+					}
+					if(flag){
+						for (var i = 0; i < this.list.length; i++) {
+							for (var j = 0; j < this.list[i].package.length; j++) {
+								this.list[i].package[j].choose = false;
+							}
+						}
+					}
+				},
+				handleAdd: function(index1, index2) {
+					this.list[index1].package[index2].count++;
+				},
+				handleselect: function(index1) {
+					let flag = true;
+					for (var i = 0; i <= this.list[index1].package.length; i++) {
+						if(this.list[index1].package[i].choose == false){
+							flag = false;
+						}
+						this.list[index1].package[i].choose = true;
+					}
+					if(flag){
+						for (var i = 0; i <= this.list[index1].package.length; i++) {
+							this.list[index1].package[i].choose = false;
+						}
+					}
+				}
+			}
+
+
+		})
+	</script>
+</html>
